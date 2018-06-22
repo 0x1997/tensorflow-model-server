@@ -16,6 +16,13 @@ RUN echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt 
     && apt-get purge -y --auto-remove curl ca-certificates gnupg \
     && rm -rf /var/lib/apt/lists/*
 
+ENV TINI_VERSION v0.18.0
+
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+
+RUN chmod +x /tini
+
 VOLUME /mnt
 WORKDIR /mnt
-ENTRYPOINT ["tensorflow_model_server"]
+ENTRYPOINT ["/tini", "--"]
+CMD ["tensorflow_model_server"]
